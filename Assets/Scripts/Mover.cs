@@ -61,24 +61,4 @@ public class Mover : MonoBehaviour
         //     transform.position += Vector3.right * movementPerSecond * Time.deltaTime;
         // }
     }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        BoxCollider bbox = GetComponent<BoxCollider>();
-        float xCenter = bbox.bounds.center.x;
-
-        Debug.Log("Center at " + xCenter + "collided object at " + collision.transform.position.x);
-
-        Vector3 newVector = Quaternion.Euler(0f, 0f, 45f) * Vector3.up;
-        
-        Rigidbody puckBody = collision.gameObject.GetComponent<Rigidbody>();
-
-        //0 out the initial movement
-        puckBody.velocity = new Vector3(0f, 0f, 0f);
-
-        puckBody.AddForce(newVector, ForceMode.Impulse);
-
-        // Debug.DrawLine(transform.position, transform.position + newVector * 10f, Color.red);
-        // Debug.Break();
-    }
 }
