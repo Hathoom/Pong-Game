@@ -8,6 +8,8 @@ public class ScoreArea : MonoBehaviour
     // 0 is left score zone, 1 is right score zone.
     public int lrscore;
 
+    public ScoreArea otherArea;
+
     // both score values, each should only care about 1, 
     // I will need to improve this
     private int lscore = 0;
@@ -28,8 +30,8 @@ public class ScoreArea : MonoBehaviour
         {
             rscore++;
             Debug.Log("Right player scored" + " their score is: " + rscore);
-            AddScore(rscore);
             CheckWin(rscore);
+            SetScore();
             //spawn the next puck
             spawnArea.SpawnPuck(-1);
         }
@@ -38,24 +40,24 @@ public class ScoreArea : MonoBehaviour
         {
             lscore++;
             Debug.Log("Left player scored" + " their score is: " + lscore);
-            AddScore(lscore);
             CheckWin(lscore);
+            SetScore();
 
             //spawn the next puck
             spawnArea.SpawnPuck(1);
         }
     }
 
-    public void AddScore(int score)
+    public void SetScore()
     {
         //check if this is left or right zone through score.
-        if (lscore == score)
+        if (lrscore == 1)
         {
-            ui.SetLeftScore(score);
+            ui.SetLeftScore(lscore);
         }
         else
         {
-            ui.SetRightScore(score);
+            ui.SetRightScore(rscore);
         }
     }
 
@@ -65,12 +67,23 @@ public class ScoreArea : MonoBehaviour
         {
             if (lscore == score)
             {
-                Debug.Log("Left Player wins!");
+                Debug.Log("Game Over, Left Player wins!");
+                otherArea.ResetScore();
+                ResetScore();
             }
             else
             {
-                Debug.Log("Right Player wins!");
+                Debug.Log("Game Over, Right Player wins!");
+                otherArea.ResetScore();
+                ResetScore();
             }
         }
+    }
+
+    public void ResetScore()
+    {
+        lscore = 0;
+        rscore = 0;
+        SetScore();
     }
 }
