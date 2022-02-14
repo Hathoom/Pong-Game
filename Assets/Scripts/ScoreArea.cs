@@ -10,16 +10,19 @@ public class ScoreArea : MonoBehaviour
 
     public ScoreArea otherArea;
 
-    // both score values, each should only care about 1, 
-    // I will need to improve this
-    private int lscore = 0;
-    private int rscore = 0;
+    // score of the area
+    private int score = 0;
+
+    // color of the area
+    private int color;
+
 
     // a reference to the ui so I can easily update the score.
     public UI ui;
 
     public PuckSpawn spawnArea;
 
+    //when a puck hits a score area
     private void OnTriggerEnter(Collider other)
     {
         //destroy existing puck
@@ -28,9 +31,9 @@ public class ScoreArea : MonoBehaviour
         // right player scores
         if (lrscore == 0)
         {
-            rscore++;
-            Debug.Log("Right player scored" + " their score is: " + rscore);
-            CheckWin(rscore);
+            score++;
+            Debug.Log("Right player scored" + " their score is: " + score);
+            CheckWin(score);
             SetScore();
             //spawn the next puck
             spawnArea.SpawnPuck(-1);
@@ -38,34 +41,43 @@ public class ScoreArea : MonoBehaviour
         // left player scores
         if (lrscore == 1)
         {
-            lscore++;
-            Debug.Log("Left player scored" + " their score is: " + lscore);
-            CheckWin(lscore);
+            score++;
+            Debug.Log("Left player scored" + " their score is: " + score);
+            CheckWin(score);
             SetScore();
-
             //spawn the next puck
             spawnArea.SpawnPuck(1);
         }
     }
 
+    // alter the ui to show the current score
     public void SetScore()
     {
+        //set this area's text color
+        SetColor();
+        //set the other area's text color
+        otherArea.SetColor();
+
         //check if this is left or right zone through score.
         if (lrscore == 1)
         {
-            ui.SetLeftScore(lscore);
+            ui.SetLeftScore(score, color);
+            ui.SetRightScore(otherArea.GetScore(), otherArea.GetColor());
         }
         else
         {
-            ui.SetRightScore(rscore);
+            ui.SetRightScore(score, color);
+            ui.SetLeftScore(otherArea.GetScore(), otherArea.GetColor());
         }
     }
 
+    // check for a win
     public void CheckWin(int score)
     {
         if (score >= 11)
         {
-            if (lscore == score)
+            //determine which side won
+            if (lrscore == 1)
             {
                 Debug.Log("Game Over, Left Player wins!");
                 otherArea.ResetScore();
@@ -80,10 +92,37 @@ public class ScoreArea : MonoBehaviour
         }
     }
 
+    //reset the score to 0
     public void ResetScore()
     {
-        lscore = 0;
-        rscore = 0;
+        score = 0;
         SetScore();
+    }
+
+    //get the score
+    public int GetScore()
+    {
+        return score;
+    }
+
+    public void SetColor()
+    {
+        if (score > otherArea.GetScore())
+        {
+            color = 1;
+        }
+        else if (score == otherArea.GetScore())
+        {
+            color = 2;
+        }
+        else
+        {
+            color = 3;
+        }
+    }
+
+    public int GetColor()
+    {
+        return color;
     }
 }

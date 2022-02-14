@@ -40,6 +40,14 @@ public class Mover : MonoBehaviour
         {
             rbody.AddForce(force, ForceMode.VelocityChange);
         }
+
+        if(movementAxis == 0)
+        {
+            rbody.velocity = Vector3.zero;  
+            rbody.angularVelocity = Vector3.zero;  
+            rbody.Sleep();
+        }
+
         Vector3 currentPos = transform.position;
 
         if (FreezeY)
